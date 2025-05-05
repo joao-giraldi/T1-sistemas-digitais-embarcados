@@ -23,7 +23,8 @@ typedef enum {
     READY         = 0, 
     RUNNING       = 1,
     WAITING       = 2,
-    SEM_WAITING   = 3
+    SEM_WAITING   = 3,
+    MUTEX_WAITING = 4
 } state_t;
 
 typedef struct tcb {

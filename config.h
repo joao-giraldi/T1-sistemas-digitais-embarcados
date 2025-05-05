@@ -15,16 +15,19 @@
 
 #define PIPE_SIZE           3
 
-// Aplicação exemplo
+// Aplicaï¿½ï¿½o exemplo
 
 // APP_1 exemplo somente das tarefas
-#define APP_1               ON
+#define APP_1               OFF
 
-// APP_2 exemplo das tarefas com semáforo
+// APP_2 exemplo das tarefas com semï¿½foro
 #define APP_2               OFF
 
-// APP_3 exemplo das tarefas com comunicação via pipe
+// APP_3 exemplo das tarefas com comunicaï¿½ï¿½o via pipe
 #define APP_3               OFF
+
+// APP_4 exemplo das tarefas com mutex
+#define APP_4               ON
 
 #endif	/* CONFIG_H */
 

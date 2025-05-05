@@ -3,6 +3,7 @@
 #include "sync.h"
 #include "pipe.h"
 #include "config.h"
+#include "io.h"
 
 #if APP_1 == ON
 
@@ -33,9 +34,9 @@ void user_config()
     TRISDbits.RD1 = 0;
     TRISDbits.RD2 = 0;
     
-    // Define as tarefas como funções globais para
+    // Define as tarefas como funï¿½ï¿½es globais para
     // evitar que o compilador as retire na fase
-    // de geração de otimização.
+    // de geraï¿½ï¿½o de otimizaï¿½ï¿½o.
     asm("global _tarefa_1, _tarefa_2, _tarefa_3");
 }
 
@@ -79,12 +80,12 @@ void user_config()
     TRISDbits.RD1 = 0;
     TRISDbits.RD2 = 0;
    
-    // Inicializar o semáforo
+    // Inicializar o semï¿½foro
     sem_init(&s, 0);
     
-    // Define as tarefas como funções globais para
+    // Define as tarefas como funï¿½ï¿½es globais para
     // evitar que o compilador as retire na fase
-    // de geração de otimização.
+    // de geraï¿½ï¿½o de otimizaï¿½ï¿½o.
     asm("global _tarefa_1, _tarefa_2, _tarefa_3");
 }
 
@@ -134,10 +135,50 @@ void user_config()
    
     create_pipe(&pipe);
     
-    // Define as tarefas como funções globais para
+    // Define as tarefas como funï¿½ï¿½es globais para
     // evitar que o compilador as retire na fase
-    // de geração de otimização.
+    // de geraï¿½ï¿½o de otimizaï¿½ï¿½o.
     asm("global _tarefa_1, _tarefa_2, _tarefa_3");
 }
+
+#elif APP_4 == ON
+
+mutex_t test_mutex;
+
+TASK tarefa_1()
+{
+    while (1) {
+        mutex_lock(&test_mutex);
+        LED1 = LED_ON;
+        delay(1);
+        LED1 = LED_OFF;
+        mutex_unlock(&test_mutex);
+        delay(1);
+    }
+}
+
+TASK tarefa_2()
+{
+    while (1) {
+        mutex_lock(&test_mutex);
+        LED2 = LED_ON;
+        delay(1);
+        LED2 = LED_OFF;
+        mutex_unlock(&test_mutex);
+        delay(1);
+    }
+}
+
+void user_config()
+{
+    io_init();
+    mutex_init(&test_mutex);
+
+    create_task(1, 3, tarefa_1);
+    create_task(2, 3, tarefa_2);
+
+    asm("global _tarefa_1, _tarefa_2");
+}
+
 
 #endif

@@ -1,4 +1,5 @@
 #include "sync.h"
+#include "config.h"
 #include "types.h"
 #include "kernel.h"
 #include "scheduler.h"
@@ -24,7 +25,7 @@ void sem_wait(sem_t *sem)
         // Bloqueia a tarefa
         sem->s_queue[sem->s_size] = r_queue.task_running;
         sem->s_size = (sem->s_size+1) % MAX_USER_TASKS;
-        // Força a preempção
+        // Forï¿½a a preempï¿½ï¿½o
         SAVE_CONTEXT(SEM_WAITING);
         scheduler();
         RESTORE_CONTEXT();
@@ -48,32 +49,57 @@ void sem_post(sem_t *sem)
     ei();
 }
 
-// API para o mutex
+//MUTEX
 void mutex_init(mutex_t *m)
 {
-    m->flag = true;  // Seção crítica liberada
+    m->flag = false; //Mutex comeÃ§a inicialmente livre
+    m->s_size = 0; //Fila de espera vazia
+    m->s_pos_out = 0;
 }
 
 void mutex_lock(mutex_t *m)
 {
     di();
-    
-    if (m->flag) {
-        m->flag = false;
-        ei();
+
+    if (m->flag == false) { 
+        //Mutex livre, pode pegar
+        m->flag = true;
+    } else { 
+        //Mutex ocupado, bloquear a tarefa atual e enfileirar
+
+        m->s_queue[m->s_size] = r_queue.task_running;
+        m->s_size = (m->s_size + 1) % MAX_USER_TASKS;
+        r_queue.ready_queue[r_queue.task_running].task_state = MUTEX_WAITING;
+        //PreempÃ§Ã£o para quando trocar a tarefa
+
+        LATDbits.LATD7 = 1;  // Acende o LED do IDLE quando bloquear a tarefa
+        SAVE_CONTEXT(MUTEX_WAITING);
+        scheduler();
+        RESTORE_CONTEXT();
+        LATDbits.LATD7 = 0;  // Desliga quando desbloqueia
+
     }
-    else {
-        ei();
-        while (!m->flag);
-    }
+
+    ei();
 }
 
 void mutex_unlock(mutex_t *m)
 {
     di();
+
     
-    m->flag = true;
+    if (m->s_size > 0) {
+        // Desbloqueia a prÃ³xima tarefa esperando
+        uint8_t task_id = m->s_queue[m->s_pos_out];
+        r_queue.ready_queue[task_id].task_state = READY;
+        m->s_pos_out = (m->s_pos_out + 1) % MAX_USER_TASKS;
+        // O mutex continua ocupado - ele sÃ³ serÃ¡ liberado quando essa nova tarefa tambÃ©m fizer unlock.
+    } else {
+        // Nenhuma esperando, libera o mutex
+        m->flag = false;
+    }
     
     ei();
 }
+
 
