@@ -66,17 +66,14 @@ void mutex_lock(mutex_t *m)
         m->flag = true;
     } else { 
         //Mutex ocupado, bloquear a tarefa atual e enfileirar
-
         m->s_queue[m->s_size] = r_queue.task_running;
         m->s_size = (m->s_size + 1) % MAX_USER_TASKS;
-        r_queue.ready_queue[r_queue.task_running].task_state = MUTEX_WAITING;
-        //Preempção para quando trocar a tarefa
+        //r_queue.ready_queue[r_queue.task_running].task_state = MUTEX_WAITING;
 
-        LATDbits.LATD7 = 1;  // Acende o LED do IDLE quando bloquear a tarefa
+        //Preempção para quando trocar a tarefa
         SAVE_CONTEXT(MUTEX_WAITING);
         scheduler();
         RESTORE_CONTEXT();
-        LATDbits.LATD7 = 0;  // Desliga quando desbloqueia
 
     }
 
