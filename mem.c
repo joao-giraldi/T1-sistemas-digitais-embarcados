@@ -280,7 +280,7 @@ void SRAMInitHeap(void)
 		}
 		else
 		{
-			*pHeap = count;
+			*pHeap = (unsigned char) count;
 			*(pHeap + count) = 0;
 			return;
 		}
@@ -342,7 +342,8 @@ NEAR unsigned char _SRAMmerge(SALLOC * NEAR pSegA)
 		(*pSegA).byte = _MAX_SEGMENT_SIZE;
 		pSegA += _MAX_SEGMENT_SIZE; //(*pSeg1).byte;  
 		pSegB += uSegB.byte; //(*pSeg2).byte ;   
-		(*pSegA).byte = pSegB - pSegA;
+		(*pSegA).byte = (unsigned char)(pSegB - pSegA);
+
 		
 		return (_MAX_SEGMENT_SIZE);
 	}

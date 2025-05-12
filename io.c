@@ -25,7 +25,11 @@ void io_set_pin(uint8_t led, uint8_t state)
         case 2:
             LED2 = state;
             break;
+        case 3:
+            LED3 = state;
+            break;
         default:
             break;
     }
 }
+

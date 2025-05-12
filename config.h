@@ -11,7 +11,7 @@
 
 #define IDLE_DEBUG          ON
 
-#define DYNAMIC_MEM         OFF
+#define DYNAMIC_MEM         ON
 
 #define PIPE_SIZE           3
 
@@ -24,13 +24,13 @@
 #define APP_2               OFF
 
 // APP_3 exemplo das tarefas com comunica��o via pipe
-#define APP_3               OFF
+#define APP_3               ON
 
 // APP_4 exemplo das tarefas com mutex
 #define APP_4               OFF
 
 // APP_5 exemplo das tarefas com prioridade
-#define APP_5               ON
+#define APP_5               OFF
 
 #endif	/* CONFIG_H */
 

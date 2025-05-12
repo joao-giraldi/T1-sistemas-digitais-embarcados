@@ -93,53 +93,48 @@ void user_config()
 
 pipe_t pipe;
 
-TASK tarefa_1()
+TASK produtor()
 {
-    while (1) {
-        LATDbits.LD0 = ~PORTDbits.RD0;
-        //LATDbits.LD0 = ^=1;
-    }    
-}
+    uint8_t dados[3] = {'L', 'D', 'L'};
+    uint8_t i = 0;
 
-TASK tarefa_2()
-{
-    uint8_t dados[3] = {'L', 'D', 'D'};
-    int i = 0;
-    
     while (1) {
         write_pipe(&pipe, dados[i]);
-        i = (i+1) % 3;
-        LATDbits.LD1 = ~PORTDbits.RD1;        
-    }    
+        LED1 = ~LED1;  // Pisca LED1 a cada envio para indicar produção
+        i = (i + 1) % 3;
+        delay(2);
+    }
 }
 
-TASK tarefa_3()
+TASK consumidor()
 {
-    uint8_t dado_pipe = 0;
+    uint8_t dado_pipe;
+
     while (1) {
         read_pipe(&pipe, &dado_pipe);
-        if (dado_pipe == 'L') {
-            LATDbits.LD2 = 1;
-        }
-        else if (dado_pipe == 'D') {
-            LATDbits.LD2 = 0;
-        }
+
+        if (dado_pipe == 'L')
+            LED2 = LED_ON;  // Liga LED2 quando lê 'L'
+        else if (dado_pipe == 'D')
+            LED2 = LED_OFF; // Desliga LED2 quando lê 'D'
+
+        LED3 = ~LED3;  // Pisca LED3 indicando consumo
+        delay(2);
     }
 }
 
 void user_config()
 {
-    TRISDbits.RD0 = 0;
-    TRISDbits.RD1 = 0;
-    TRISDbits.RD2 = 0;
-   
+    io_init();
+
     create_pipe(&pipe);
-    
-    // Define as tarefas como fun��es globais para
-    // evitar que o compilador as retire na fase
-    // de gera��o de otimiza��o.
-    asm("global _tarefa_1, _tarefa_2, _tarefa_3");
+
+    create_task(1, 1, produtor);
+    create_task(2, 1, consumidor);
+
+    asm("global _produtor, _consumidor");
 }
+
 
 #elif APP_4 == ON
 
@@ -178,6 +173,74 @@ void user_config()
     create_task(2, 3, tarefa_2);
 
     asm("global _tarefa_1, _tarefa_2");
+}
+
+#elif APP_5 == ON
+
+uint8_t contador_baixa = 0;
+uint8_t contador_media = 0;
+uint8_t contador_alta  = 0;
+
+TASK tarefa_baixa()
+{
+    while (1) {
+        if (contador_baixa < 3) {
+            LED1 = LED_ON;
+            delay(1);
+            LED1 = LED_OFF;
+            delay(1);
+            contador_baixa++;
+            change_state(READY);  // Cede o controle após cada execução
+        } else {
+            contador_baixa = 0;
+        }
+    }
+}
+
+TASK tarefa_media()
+{
+    while (1) {
+        if (contador_media < 3) {
+            LED2 = LED_ON;
+            delay(1);
+            LED2 = LED_OFF;
+            delay(1);
+            contador_media++;
+            change_state(READY);  // Cede o controle após cada execução
+        } else {
+            contador_media = 0;
+        }
+    }
+}
+
+TASK tarefa_alta()
+{
+    while (1) {
+        if (contador_alta < 3) {
+            LED3 = LED_ON;
+            delay(1);
+            LED3 = LED_OFF;
+            delay(1);
+            contador_alta++;
+            change_state(READY);  // Cede o controle após cada execução
+        } else {
+            contador_alta = 0;
+        }
+    }
+}
+
+void user_config()
+{
+    io_init();
+
+    create_task(1, 1, tarefa_baixa);
+    create_task(2, 2, tarefa_media);
+    create_task(3, 3, tarefa_alta);
+
+    // Garante que o linker não elimine as funções
+    asm("global _tarefa_baixa");
+    asm("global _tarefa_media");
+    asm("global _tarefa_alta");
 }
 
 

@@ -3,6 +3,8 @@
 #include "user_app.h"
 #include "timer.h"
 #include "config.h"
+#include "mem.h"
+
 
 // Declara fila de aptos
 ready_queue_t r_queue;
@@ -69,12 +71,13 @@ void os_init()
 
 void os_start()
 {
-    #if DEFAULT_SCHEDULER == PRIORITY_SCHEDULER
-    // Ordenada a fila de aptos
-    #endif
     user_config();
+    #if DEFAULT_SCHEDULER == PRIORITY_SCHEDULER
+    scheduler();    
+    #endif
     
-    // Habilita as interrupções    
+    
+    // Habilita as interrupï¿½ï¿½es    
     ei();
     
     // Liga o timer

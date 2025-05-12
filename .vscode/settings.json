@@ -1,0 +1,11 @@
+{
+    "mplab.clangd.arguments": [
+        "--compile-commands-dir=${workspaceRoot}\\_build\\RTOS_V25\\default"
+    ],
+    "mplab.clangd.path": "c:\\Program Files\\Microchip\\xc8\\v3.00\\bin\\xc8-clangd.exe",
+    "cmake.sourceDirectory": "D:/UFSC/2025.1/Sistemas Digitais Embarcados/RTOS_V25.X/cmake/RTOS_V25/default",
+    "files.associations": {
+        "user_app.h": "c",
+        "types.h": "c"
+    }
+}
