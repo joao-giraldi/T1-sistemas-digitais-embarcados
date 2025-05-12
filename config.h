@@ -7,7 +7,7 @@
 #define MAX_USER_TASKS      3
 #define MAX_STACK_SIZE      32
 
-#define DEFAULT_SCHEDULER   RR_SCHEDULER
+#define DEFAULT_SCHEDULER   PRIORITY_SCHEDULER
 
 #define IDLE_DEBUG          ON
 
@@ -27,7 +27,10 @@
 #define APP_3               OFF
 
 // APP_4 exemplo das tarefas com mutex
-#define APP_4               ON
+#define APP_4               OFF
+
+// APP_5 exemplo das tarefas com prioridade
+#define APP_5               ON
 
 #endif	/* CONFIG_H */
 
