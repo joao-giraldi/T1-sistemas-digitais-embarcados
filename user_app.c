@@ -93,35 +93,40 @@ void user_config()
 
 pipe_t pipe;
 
-TASK produtor()
-{
-    uint8_t dados[3] = {'L', 'D', 'L'};
-    uint8_t i = 0;
+ TASK produtor()
+ {
+     uint8_t i;
+     i = 0;
+     while (1) {
+        uint8_t dados[PIPE_SIZE] = {'L', 'D', 'L'};
+         write_pipe(&pipe, dados[i]);
+         i = i + 1;
+         if(i == 3){
+            i = 0;
+            delay(2*PIPE_SIZE);
+        }
 
-    while (1) {
-        write_pipe(&pipe, dados[i]);
-        LED1 = ~LED1;  // Pisca LED1 a cada envio para indicar produção
-        i = (i + 1) % 3;
-        delay(2);
-    }
-}
+     }
+ }
 
-TASK consumidor()
-{
-    uint8_t dado_pipe;
 
-    while (1) {
-        read_pipe(&pipe, &dado_pipe);
+ TASK consumidor()
+ {
+     uint8_t dado_pipe;
 
-        if (dado_pipe == 'L')
-            LED2 = LED_ON;  // Liga LED2 quando lê 'L'
-        else if (dado_pipe == 'D')
-            LED2 = LED_OFF; // Desliga LED2 quando lê 'D'
+     while (1) {
+         LED1 = ~LED1;
+         read_pipe(&pipe, &dado_pipe);
 
-        LED3 = ~LED3;  // Pisca LED3 indicando consumo
-        delay(2);
-    }
-}
+         if (dado_pipe == 'L')
+             LED2 = LED_ON;  // Liga LED2 quando lê 'L'
+         else if (dado_pipe == 'D')
+             LED2 = LED_OFF; // Desliga LED2 quando lê 'D'
+
+         LED3 = ~LED3;  // Pisca LED3 indicando consumo
+         delay(2);
+     }
+ }
 
 void user_config()
 {
@@ -129,8 +134,8 @@ void user_config()
 
     create_pipe(&pipe);
 
-    create_task(1, 1, produtor);
-    create_task(2, 2, consumidor);
+    create_task(2, 1, produtor);
+    create_task(1, 2, consumidor);
 
     asm("global _produtor, _consumidor");
 }
