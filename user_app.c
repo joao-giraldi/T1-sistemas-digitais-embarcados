@@ -130,7 +130,7 @@ void user_config()
     create_pipe(&pipe);
 
     create_task(1, 1, produtor);
-    create_task(2, 1, consumidor);
+    create_task(2, 2, consumidor);
 
     asm("global _produtor, _consumidor");
 }
