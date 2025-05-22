@@ -7,6 +7,12 @@ TASK tarefa_1(void);
 TASK tarefa_2(void);
 TASK tarefa_3(void);
 
+TASK task_acelerador(void);
+TASK task_controle_central(void);
+TASK task_injecao(void);
+TASK task_controle_estabilidade(void);
+
+
 void user_config(void);
 
 #endif	/* USER_APP_H */

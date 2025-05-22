@@ -2,16 +2,20 @@
 #include "timer.h"
 #include "kernel.h"
 #include "scheduler.h"
+#include "io.h"
+#include <stdbool.h>
+#include "user_app.h"
+
 
 void config_timer0()
 {
-    // Habilita interrupções de periféricos
+    // Habilita interrupï¿½ï¿½es de perifï¿½ricos
     INTCONbits.PEIE     = 1;
-    // Habilita interrupção do timer 0
+    // Habilita interrupï¿½ï¿½o do timer 0
     INTCONbits.TMR0IE   = 1;
     // Seta o flag do timer em zero
     INTCONbits.TMR0IF   = 0;
-    // Transição do timer por referência interna
+    // Transiï¿½ï¿½o do timer por referï¿½ncia interna
     T0CONbits.T0CS      = 0;
     // Ativa preescaler para o timer zero
     T0CONbits.PSA       = 0;
@@ -26,27 +30,24 @@ void start_timer0()
     T0CONbits.TMR0ON = 1;
 }
 
-// Tratador de interrupção do timer
-void __interrupt() ISR_TMR0()
+// Tratador de interrupï¿½ï¿½o do timer
+void __interrupt(high_priority) isr(void)
 {
-    di();
-    
-    // Seta o flag do timer em zero
-    INTCONbits.TMR0IF   = 0;
-    // Valor inicial do timer
-    TMR0 = 0;
-    
-    // Decrementa o delay das tarefas que estão em estado 
-    // de waiting
-    decrease_time();
-    
-    // Salva o contexto da tarefa que está em execução
-    SAVE_CONTEXT(READY);
+    // Tratamento do Timer0
+    if (INTCONbits.TMR0IF) {
+        INTCONbits.TMR0IF = 0;
+        decrease_time();
+    }
 
-    // Chama o escalonador para definir qual a próxima tarefa será executada
-    scheduler();
-    // Restaura o contexto da tarefa que entrará em execução
-    RESTORE_CONTEXT();
-    
-    ei();
+    // Tratamento da interrupÃ§Ã£o externa INT0 (RB0)
+    if (INTCONbits.INT0IF) {
+        static bool estabilidade_criada = false;
+
+        if (!estabilidade_criada) {
+            create_task(TID_ESTABILIDADE, 255, task_controle_estabilidade); // Prioridade 255 = mÃ¡xima
+            estabilidade_criada = true;
+        }
+
+        INTCONbits.INT0IF = 0;
+    }
 }

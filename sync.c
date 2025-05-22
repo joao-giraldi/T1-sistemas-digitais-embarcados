@@ -40,11 +40,12 @@ void sem_post(sem_t *sem)
     
     sem->s_value++;
     
-    if (sem->s_value <= 0) {
-        // Desbloqueia tarefa mais antiga
+    if (sem->s_value <= 0 && sem->s_size > 0) {
         r_queue.ready_queue[sem->s_queue[sem->s_pos_out]].task_state = READY;
-        sem->s_pos_out = (sem->s_pos_out + 1) % MAX_USER_TASKS;        
+        sem->s_pos_out = (sem->s_pos_out + 1) % MAX_USER_TASKS;
+        sem->s_size--;
     }
+
     
     ei();
 }

@@ -3,9 +3,9 @@
  <FRAME activewindow="0">
   <PLACEMENT>2c0000000200000003000000ffffffffffffffffffffffffffffffffab0000000d000000d506000003040000</PLACEMENT>
   <WINDOW type="default" module="ISIS">
-   <editor metric="0" gridmajor="2540000" mode="00000001" zoom="0" scale="186" flipped="0" gridminor="254000" gridmode="32" snapidx="2" snap="254000" xcursor="0" orgmode="0" snaprange="127000">
+   <editor metric="0" gridmajor="2540000" mode="00000000" zoom="0" scale="126" flipped="0" gridminor="254000" gridmode="32" snapidx="2" snap="254000" xcursor="0" orgmode="0" snaprange="127000">
     <world y1="-8890000" x1="-12700000" y2="8890000" x2="12700000"/>
-    <centre x="-1349204" y="4025764"/>
+    <centre x="0" y="0"/>
     <origin x="0" y="0"/>
    </editor>
   </WINDOW>
@@ -18,9 +18,9 @@
   </editor>
  </MODULE>
  <MODULE name="ISIS">
-  <editor metric="0" gridmajor="2540000" mode="00000001" zoom="0" scale="186" flipped="0" gridminor="254000" gridmode="32" snapidx="2" snap="254000" xcursor="0" orgmode="0" snaprange="127000">
+  <editor metric="0" gridmajor="2540000" mode="00000000" zoom="0" scale="126" flipped="0" gridminor="254000" gridmode="32" snapidx="2" snap="254000" xcursor="0" orgmode="0" snaprange="127000">
    <world y1="-8890000" x1="-12700000" y2="8890000" x2="12700000"/>
-   <centre x="-1349204" y="4025764"/>
+   <centre x="0" y="0"/>
    <origin x="0" y="0"/>
   </editor>
  </MODULE>
@@ -31,6 +31,7 @@
      <ITEM name="Message Column Width">-22</ITEM>
      <ITEM name="ShowGrid">No</ITEM>
      <ITEM name="Source Column Width">100</ITEM>
+     <ITEM name="Time Column Width">120</ITEM>
      <ITEM name="Version">100</ITEM>
     </PROPERTIES>
    </POPUP>
@@ -129,29 +130,37 @@
      <ITEM name="TopLineAddress">00000000</ITEM>
     </PROPERTIES>
    </POPUP>
-   <POPUP w="600" x="-1882" flags="0000000a" y="129" h="400" pid="1" iid="1">
+   <POPUP w="721" x="1164" flags="0000000b" y="475" h="400" pid="1" iid="1">
     <PROPERTIES/>
    </POPUP>
-   <POPUP w="300" x="-1862" flags="0000000a" y="149" h="300" pid="2" iid="1">
+   <POPUP w="890" x="218" flags="0000800b" y="543" h="300" pid="2" iid="1">
     <PROPERTIES>
      <ITEM name="Address Column Width">100</ITEM>
      <ITEM name="AutoResize">No</ITEM>
      <ITEM name="Gridlines">Yes</ITEM>
-     <ITEM name="Name Column Width">100</ITEM>
-     <ITEM name="Previous Value Column Width">100</ITEM>
+     <ITEM name="Name Column Width">194</ITEM>
+     <ITEM name="Previous Value Column Width">210</ITEM>
      <ITEM name="ShowAddresses">Yes</ITEM>
      <ITEM name="ShowGlobals">Yes</ITEM>
      <ITEM name="ShowPreviousValues">Yes</ITEM>
      <ITEM name="ShowTypes">Yes</ITEM>
      <ITEM name="ShowWatchPoint">No</ITEM>
      <ITEM name="TriggerMode">0</ITEM>
-     <ITEM name="Type Column Width">100</ITEM>
-     <ITEM name="Value Column Width">100</ITEM>
+     <ITEM name="Type Column Width">144</ITEM>
+     <ITEM name="Value Column Width">223</ITEM>
      <ITEM name="Version">100</ITEM>
      <ITEM name="Watch Expression Column Width">0</ITEM>
      <ITEM name="nItems">0</ITEM>
     </PROPERTIES>
    </POPUP>
   </PWI>
+  <BREAKPOINT LINE="114" FILE="D:/UFSC/2025.1/Sistemas Digitais Embarcados/RTOS_V25.X/user_app.c" ADDRESS="4294967295" PROJECT="1"/>
+  <BREAKPOINT LINE="27" FILE="D:/UFSC/2025.1/Sistemas Digitais Embarcados/RTOS_V25.X/pipe.c" ADDRESS="4294967295" PROJECT="1"/>
+  <BREAKPOINT LINE="39" FILE="../scheduler.c" ADDRESS="4294967295" PROJECT="1"/>
+  <BREAKPOINT LINE="269" FILE="../user_app.c" ADDRESS="4294967295" PROJECT="1"/>
+  <BREAKPOINT LINE="280" FILE="../user_app.c" ADDRESS="4294967295" PROJECT="1"/>
+  <BREAKPOINT LINE="289" FILE="../user_app.c" ADDRESS="4294967295" PROJECT="1"/>
+  <BREAKPOINT LINE="301" FILE="../user_app.c" ADDRESS="4294967295" PROJECT="1"/>
+  <BREAKPOINT LINE="307" FILE="../user_app.c" ADDRESS="4294967295" PROJECT="1"/>
  </MODULE>
 </WORKSPACE>
