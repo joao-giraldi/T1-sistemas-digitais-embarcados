@@ -35,7 +35,7 @@ void user_config()
     TRISDbits.RD1 = 0;
     TRISDbits.RD2 = 0;
     
-    // Define as tarefas como fun��es globais para
+    Define as tarefas como fun��es globais para
     // evitar que o compilador as retire na fase
     // de gera��o de otimiza��o.
     asm("global _tarefa_1, _tarefa_2, _tarefa_3");
@@ -258,17 +258,18 @@ void user_config()
 
 #elif APP_6 == ON
 
-pipe_t *pipe_acelerador;
+pipe_t pipe_instancia;
+pipe_t *pipe_acelerador = &pipe_instancia;
 mutex_t mutex_pwm;
 uint16_t valor_adc = 0;
 
 TASK task_acelerador(void)
 {
     uint16_t pedal;
-    while(1) {
+    while (1) {
         pedal = adc_read();
-        write_pipe(pipe_acelerador,pedal);
-        delay(5);     
+        write_pipe(pipe_acelerador, pedal);
+        delay(1);     
     }
 }
 
@@ -278,11 +279,11 @@ TASK task_controle_central(void)
         mutex_lock(&mutex_pwm);
         read_pipe(pipe_acelerador, &valor_adc);
         mutex_unlock(&mutex_pwm);
-        delay(5);
+        delay(1);
     }    
 }
 
-TASK task_injecao(void)
+TASK task_injecao()
 {
     uint16_t duty_cicle;
     while (1) {
@@ -290,16 +291,19 @@ TASK task_injecao(void)
         duty_cicle = (uint16_t)((uint32_t)valor_adc * 195 / 1000);
         mutex_unlock(&mutex_pwm);
 
-        if(duty_cicle > 200) {
+        if(duty_cicle > 20) {
             duty_cicle = 200;
         } 
-        else if(duty_cicle < 0) {
+        else if(duty_cicle < 20) {
             duty_cicle = 0;
         }
         activate_pwm(duty_cicle);
-        delay(5);
+        delay(1);
    }
 }
+
+
+
 
 void user_config()
 {
@@ -307,9 +311,11 @@ void user_config()
     adc_config();
     pwm_config();
 
-    create_pipe(&pipe_acelerador);
+    // Importante: o PWM é no pino RC2
+    TRISCbits.RC2 = 0;
+
+    create_pipe(pipe_acelerador);
     mutex_init(&mutex_pwm);
-    TRISEbits.RE0 = 0;
 
     create_task(1, 3, task_acelerador);
     create_task(2, 2, task_controle_central);
@@ -317,5 +323,6 @@ void user_config()
 
     asm("global _task_acelerador, _task_controle_central, _task_injecao");
 }
+
 #endif
 
