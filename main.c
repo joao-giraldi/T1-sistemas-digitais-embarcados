@@ -9,11 +9,6 @@ int main()
     os_init();
     user_config();
     
-    // // Cria tarefas de usu�rio
-    // create_task(1, 3, tarefa_1);
-    // create_task(2, 3, tarefa_2);
-    // create_task(3, 3, tarefa_3);
-    
     os_start();
     
     while (1);

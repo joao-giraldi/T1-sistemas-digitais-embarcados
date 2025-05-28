@@ -4,6 +4,7 @@
 #include "timer.h"
 #include "config.h"
 #include "mem.h"
+#include "io.h"
 
 
 // Declara fila de aptos
@@ -119,5 +120,36 @@ void decrease_time(void)
                 r_queue.ready_queue[i].task_state = READY;
             }
         }
+    }
+}
+
+// Tratador de interrup��o do timer
+void __interrupt(high_priority) isr(void)
+{
+    // Tratamento do Timer0
+    if(INTCONbits.INT0F) {
+        stop_pwm();
+        while(PORTBbits.RB0) {
+            LATEbits.LATE0 = 1;
+        }
+        LATEbits.LATE0 = 0;
+        pwm_config();
+        LATDbits.LATD0 = 0;
+        INTCONbits.INT0F = 0;
+    }
+
+    //Interrupcao de timer
+    if(INTCONbits.TMR0IF) {
+        di();
+    
+        INTCONbits.TMR0IF   = 0;
+        TMR0 = 0;
+        decrease_time();
+        
+        SAVE_CONTEXT(READY);
+        scheduler();
+        RESTORE_CONTEXT();
+        
+        ei();
     }
 }

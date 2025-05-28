@@ -4,7 +4,7 @@
 #define ON                  1
 #define OFF                 2
 
-#define MAX_USER_TASKS      4
+#define MAX_USER_TASKS      3
 #define MAX_STACK_SIZE      32
 
 #define DEFAULT_SCHEDULER   PRIORITY_SCHEDULER
@@ -13,9 +13,7 @@
 
 #define DYNAMIC_MEM         ON
 
-#define PIPE_SIZE           3
-
-#define TID_ESTABILIDADE 3
+#define PIPE_SIZE           5
 
 // Aplica��o exemplo
 

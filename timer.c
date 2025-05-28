@@ -2,9 +2,6 @@
 #include "timer.h"
 #include "kernel.h"
 #include "scheduler.h"
-#include "io.h"
-#include <stdbool.h>
-#include "user_app.h"
 
 
 void config_timer0()
@@ -30,24 +27,3 @@ void start_timer0()
     T0CONbits.TMR0ON = 1;
 }
 
-// Tratador de interrup��o do timer
-void __interrupt(high_priority) isr(void)
-{
-    // Tratamento do Timer0
-    if (INTCONbits.TMR0IF) {
-        INTCONbits.TMR0IF = 0;
-        decrease_time();
-    }
-
-    // Tratamento da interrupção externa INT0 (RB0)
-    if (INTCONbits.INT0IF) {
-        static bool estabilidade_criada = false;
-
-        if (!estabilidade_criada) {
-            create_task(TID_ESTABILIDADE, 255, task_controle_estabilidade); // Prioridade 255 = máxima
-            estabilidade_criada = true;
-        }
-
-        INTCONbits.INT0IF = 0;
-    }
-}

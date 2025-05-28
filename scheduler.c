@@ -39,7 +39,7 @@ void __reentrant priority_scheduler()
     highest_priority = r_queue.ready_queue[0].task_priority;
     selected_task = 0;
 
-    for (i = 1; i < r_queue.ready_queue_size; i++) {
+    for (i = 0; i < r_queue.ready_queue_size; i++) {
         if (r_queue.ready_queue[i].task_state == READY) {
             // Escolhe a tarefa com maior prioridade encontrada
             if (r_queue.ready_queue[i].task_priority > highest_priority) {

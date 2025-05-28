@@ -18,14 +18,14 @@
 // API
 void io_init(void);
 void io_set_pin(uint8_t led, uint8_t state);
-void aciona_freio(void);
 
-void config_ext_int(void);
+void adc_config(void);
+uint16_t adc_read(void);
 
-void config_adc(void);
-uint16_t read_adc(void);
-void config_pwm(void);
-void set_pwm_duty(uint8_t duty);
+void pwm_config(void);
+void activate_pwm(uint16_t dc);
+void stop_pwm(void);
 
+void config_interruption(void);
 
 #endif /* IO_H */

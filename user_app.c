@@ -258,81 +258,64 @@ void user_config()
 
 #elif APP_6 == ON
 
-#include "pipe.h"
-#include "io.h"
-#include "kernel.h"
-
-pipe_t pipe_acelerador;
-uint8_t pwm_buffer = 0;
+pipe_t *pipe_acelerador;
 mutex_t mutex_pwm;
+uint16_t valor_adc = 0;
 
 TASK task_acelerador(void)
 {
-    uint16_t leitura_adc;
-    while (1) {
-        leitura_adc = read_adc();
-        write_pipe(&pipe_acelerador, (uint8_t)(leitura_adc >> 2));
-        delay(5);
+    uint16_t pedal;
+    while(1) {
+        pedal = adc_read();
+        write_pipe(pipe_acelerador,pedal);
+        delay(5);     
     }
 }
 
 TASK task_controle_central(void)
 {
-    uint8_t valor_adc;
     while (1) {
-        read_pipe(&pipe_acelerador, &valor_adc);
         mutex_lock(&mutex_pwm);
-        pwm_buffer = valor_adc;
+        read_pipe(pipe_acelerador, &valor_adc);
         mutex_unlock(&mutex_pwm);
-        delay(2);
-    }
+        delay(5);
+    }    
 }
 
 TASK task_injecao(void)
 {
-    uint8_t buffer_local;
+    uint16_t duty_cicle;
     while (1) {
         mutex_lock(&mutex_pwm);
-        buffer_local = pwm_buffer;
+        duty_cicle = (uint16_t)((uint32_t)valor_adc * 195 / 1000);
         mutex_unlock(&mutex_pwm);
 
-        set_pwm_duty(buffer_local);
-
-        LED1 = (buffer_local > 85);
-        LED2 = (buffer_local > 170);
-        LED3 = (buffer_local > 250);
-
-        delay(2);
-    }
-}
-
-TASK task_controle_estabilidade(void)
-{
-    aciona_freio();
-    change_state(WAITING);
-    while (1);
+        if(duty_cicle > 200) {
+            duty_cicle = 200;
+        } 
+        else if(duty_cicle < 0) {
+            duty_cicle = 0;
+        }
+        activate_pwm(duty_cicle);
+        delay(5);
+   }
 }
 
 void user_config()
 {
     io_init();
-    config_adc();
-    config_pwm();
-    config_ext_int();
+    adc_config();
+    pwm_config();
 
     create_pipe(&pipe_acelerador);
     mutex_init(&mutex_pwm);
+    TRISEbits.RE0 = 0;
 
-    create_task(1, 1, task_acelerador);
+    create_task(1, 3, task_acelerador);
     create_task(2, 2, task_controle_central);
-    create_task(3, 3, task_injecao);
-    create_task(4, 4, task_controle_estabilidade);
-    r_queue.ready_queue[4].task_state = WAITING;
+    create_task(3, 4, task_injecao);
 
-    asm("global _task_acelerador");
-    asm("global _task_controle_central");
-    asm("global _task_injecao");
-    asm("global _task_controle_estabilidade");
+    asm("global _task_acelerador, _task_controle_central, _task_injecao");
 }
 #endif
 
